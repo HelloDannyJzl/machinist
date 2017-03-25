@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou.demo.dao.peoplemanagement.userdao.UserLogin">
+	
+	<!--用户注册  -->
+	<insert id="addUser" parameterType="map">
+		insert into user(id,roleid,name,phone,flag,age,gender,adress,idcard,password,createtime
+			<if test="updatetime!=null">,updatetime</if>
+			<if test="account!=null">,account</if>
+			<if test="plantadress!=null">,plantadress</if>
+			<if test="plantnumber!=null">,plantnumber</if>
+			<if test="plantbreed!=null">,plantbreed</if>
+			<if test="reason!=null">,reason</if>
+			<if test="jobnumber!=null">,jobnumber</if>
+			<if test="foremanid!=null">,foremanid</if>)
+		values(#{id},#{roleid},#{name},#{phone},#{flag},#{age},#{gender},#{adress},#{idcard},#{password},#{createtime}
+				<if test="updatetime!=null">,#{updatetime}</if>
+				<if test="account!=null">,#{account}</if>
+				<if test="plantadress!=null">,#{plantadress}</if>
+				<if test="plantnumber!=null">,#{plantnumber}</if>
+				<if test="plantbreed!=null">,#{plantbreed}</if>
+				<if test="reason!=null">,#{reason}</if>
+				<if test="jobnumber!=null">,#{jobnumber}</if>
+				<if test="foremanid!=null">,#{foremanid}</if>)
+	</insert>
+	
+	<!--查询用户信息  -->
+	<select id="queryUser" parameterType="map" resultType="map">
+		select t1.id,t1.roleid,t1.name,t1.phone,t1.flag,t1.age,t1.gender,t1.adress,t1.idcard,t1.password,t1.account,
+			t1.plantadress,t1.plantnumber,t1.plantbreed,t1.reason,t1.foremanid,t1.jobnumber,t2.rolename from user t1,role t2
+			 where t1.roleid=t2.id
+				<if test="id!=null">and t1.id=#{id}</if>
+				<if test="phone!=null">and t1.phone=#{phone}</if>
+				<if test="password!=null">and t1.password=#{password}</if>
+				<if test="jobnumber!=null">and t1.jobnumber=#{jobnumber}</if>
+				<if test="roleid!=null">and t1.roleid=#{roleid}</if>
+				<if test="flag!=null">and t1.flag=#{flag}</if>
+				<if test="foremanid!=null">and t1.foremanid=#{foremanid}</if>
+				<if test="name!=null">and t1.name=#{name}</if>
+	</select>
+	
+	<!--分页查询所有用户  -->
+	<select id = "queryAllUser" parameterType="map" resultType="map">
+		select t1.id,t1.roleid,t1.name,t1.phone,t1.flag,t1.age,t1.gender,t1.adress,t1.idcard,t1.password,t1.account,
+			t1.plantadress,t1.plantnumber,t1.plantbreed,t1.reason,t1.foremanid,t1.jobnumber,t2.rolename from user t1,role t2
+			 where t1.flag=1 and t1.roleid=t2.id LIMIT #{startnumber},#{endnumber}
+	</select>
+	
+	<!-- 查询用户数量 -->
+	<select id="queryJobNumber" parameterType="map" resultType="int">
+		select count(id) from user 
+		<where>
+			<if test="roleid!=null">and roleid=#{roleid}</if>
+			<if test="flag!=null">and flag=#{flag}</if>
+		</where>
+	</select>
+	
+	<!--修改用户  -->
+	<update id="updateUser" parameterType="map">
+		update user 
+		<set>
+			updatetime = #{updatetime}
+			<if test="name!=null">,name = #{name}</if>
+			<if test="phone!=null">,phone=#{phone}</if>
+			<if test="flag!=null">,flag=#{flag}</if>
+			<if test="age!=null">,age=#{age}</if>
+			<if test="gender!=null">,gender=#{gender}</if>
+			<if test="reason!=null">,reason=#{reason}</if>
+			<if test="adress!=null">,adress=#{adress}</if>
+			<if test="idcard!=null">,idcard=#{idcard}</if>
+			<if test="password!=null">,password=#{password}</if>
+			<if test="account!=null">,account=#{account}</if>
+			<if test="plantbreed!=null">,plantbreed=#{plantbreed}</if>
+			<if test="plantnumber!=null">,plantnumber=#{plantnumber}</if>
+			<if test="plantadress!=null">,plantadress=#{plantadress}</if>
+			<if test="foremanid!=null">,foremanid=#{foremanid}</if>
+		</set>
+			where id = #{id}
+	</update>
+	
+	<!--删除用户  -->
+	<delete id="deleteUser" parameterType="map">
+		delete from user where id = #{id}
+	</delete>
+	
+	
+</mapper>

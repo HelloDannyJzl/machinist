@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.zhiyou.demo.dao.peoplemanagement.roledao.RoleDao">
+
+	<!-- 添加角色 -->
+	<insert id="addRele" parameterType="map">
+		insert into role(id,rolename,createtime,userid)
+				  values(#{id},#{rolename},#{createtime},#{userid})
+	</insert>
+	
+	<!--更改用户角色  -->
+	<update id="updateRole" parameterType="map">
+		update role set rolename = #{rolename},updatetime = #{updatetime} where id = #{id}
+	</update>
+	
+	<!--查询角色  -->
+	<select id="queryRole" parameterType="map" resultType="map">
+		select * from role where 1=1
+			<if test="id!=null">
+				and id = #{id}
+			</if>
+			<if test="rolename!=null">
+				and rolename=#{rolename}
+			</if>
+	</select>
+	
+	<!--删除角色  -->
+	<delete id="deleteRole" parameterType="string">
+		delete from role where id = #{id}
+	</delete>
+	
+	<!--查询所有角色数量  -->
+	<select id="queryALLCount" resultType="int">
+		select count(id) from role
+	</select>
+	
+	<!--分页查询  -->
+	<select id="queryAllRole" parameterType="map" resultType="map">
+		select * from role where 1 = 1 LIMIT #{startnumber},#{endnumber}	 	
+	</select>
+
+</mapper>

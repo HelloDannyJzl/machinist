@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhiyou.demo.dao.OrdersDao">
+	<!-- id,projectid,ordersid,farmerid,createtime,starttime,endtime,number,price,flag,foremanid,updatetime,manageid-->
+	
+	<!-- 新建订单(农户），需要管理员审核 ，用工人数需求由农户确定-->
+	<insert id= "addOrders" parameterType="map">
+		insert into orders (id,projectid,ordersid,farmerid,createtime,starttime,endtime,flag,number,price
+		 <if test="updatetime!=null"> ,updatetime </if>
+		 <if test="foremanid!=null"> ,foremanid </if>
+		 <if test="manageid!=null"> ,manageid </if>
+		)
+		values (#{id},#{projectid},#{ordersid},#{farmerid},#{createtime},#{starttime},#{endtime},#{flag},#{number},#{price}
+		<if test="updatetime!=null">,#{updatetime} </if>
+		<if test="foremanid!=null">,#{foremanid} </if>
+		<if test="manageid!=null">,#{manageid} </if>
+		)
+	</insert>
+	
+	<!-- 查询项目编号下订单数量 -->
+	<select id="queryByProjectid" parameterType="string" resultType="int">
+		select count(id) from orders where projectid = #{projectid}
+	</select>
+	
+	<!-- 修改订单（工头：添加工头id，修改订单状态为完成）；（管理员：修改管理员姓名，修改状态为进行中）（农户：修改订单详情） -->
+	<update id="updateOrders" parameterType="map">
+		update orders 
+		<set>
+			updatetime = #{updatetime}
+			<if test="flag!=null">,flag = #{flag}</if>
+			<if test="starttime!=null">,starttime = #{starttime}</if>
+			<if test="endtime!=null">,endtime = #{endtime}</if>
+			<if test="foremanname!=null">,foremanname = #{foremanname}</if>
+			<if test="starttime != null">,starttime = #{starttime}</if>
+			<if test="endtime != null">,endtime = #{endtime}</if>
+			<if test="number!= null">,number = #{number}</if>
+			<if test="price!= null">,price = #{price}</if>
+			<if test="managename!= null">,managename = #{managename}</if>
+		</set> 
+		where ordersid = #{ordersid}
+	</update>
+	
+	<!-- 删除订单（农户 ：未删除 修改状态标识为4 -->
+	<delete id="deleteOrders" parameterType="map">
+		update orders set updatetime = #{updatetime} ,flag = #{flag} where ordersid = #{ordersid}
+	</delete>
+	
+	<!--通过订单编号查询订单信息  -->
+	<select id="queryOrderById" parameterType="string" resultType="map">
+		select id,projectid,ordersid,farmername,createtime,starttime,endtime,number,price,flag,foremanname,
+		updatetime,managename from orders where ordersid = #{ordersid}
+	</select>
+	
+	<!--分页查询所有订单信息  -->
+	<!-- mysql分页下标从0开始，前闭后开-->
+	<select id="queryAllOrders" parameterType="map" resultType="map">
+		select id,projectid,ordersid,farmername,createtime,starttime,endtime,number,price,flag,foremanname,
+		updatetime,managename from orders 
+		<where>
+		   	<if test="farmername != null"> and farmername = #{farmername}</if>
+		    <if test="foremanname != null"> and foremanname = #{foremanname}</if>
+		    <if test="flag != null"> and flag = #{flag}</if>
+			<if test="likeprojectid != null"> and projectid like '%${likeprojectid}%'</if>
+			<if test="likeordersid != null"> and ordersid like '%${likeordersid}%'</if>
+		 </where>
+		 order by createtime desc 
+		 LIMIT #{startnumber},#{endnumber}
+	</select>
+	
+	<!-- 查询订单数量 -->
+	<select id= "queryAllCount" parameterType="map" resultType="int">
+		select count(id) from orders 
+		<where>
+			<if test="likeprojectid != null"> and projectid like '%${likeprojectid}%'</if>
+			<if test="likeordersid != null"> and ordersid like '%${likeordersid}%'</if>
+		   	<if test="farmername != null"> and farmername = #{farmername}</if>
+		    <if test="foremanname != null"> and foremanname = #{foremanname}</if>
+		    <if test="flag != null"> and flag = #{flag}</if>
+		 </where>
+	</select>
+	
+	<!-- 工头查询订单数量 -->
+	<select id= "queryCountByForemanname" parameterType="string" resultType="int">
+		select count(id) from orders where foremanname = #{foremanname} and flag in(2,3,4)
+	</select>
+	
+</mapper>

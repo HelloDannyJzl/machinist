@@ -4,7 +4,7 @@
   <groupId>com.zhiyou</groupId>
   <artifactId>machinist</artifactId>
   <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.020180525R1</version>
   <name>machinist Maven Webapp</name>
   <url>http://maven.apache.org</url>
   
